@@ -58,16 +58,15 @@ Usage:
 python tools/document_segmentation_server.py
 """
 
+import hashlib
+import io
+import json
+import logging
 import os
 import re
-import json
 import sys
-import io
-from typing import Dict, List, Tuple
-import hashlib
-import logging
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from dataclasses import dataclass, asdict
 
 # Set standard output encoding to UTF-8
 if sys.stdout.encoding != "utf-8":
@@ -100,11 +99,11 @@ class DocumentSegment:
     title: str
     content: str
     content_type: str  # "introduction", "methodology", "algorithm", "results", etc.
-    keywords: List[str]
+    keywords: list[str]
     char_start: int
     char_end: int
     char_count: int
-    relevance_scores: Dict[str, float]  # Scores for different query types
+    relevance_scores: dict[str, float]  # Scores for different query types
     section_path: str  # e.g., "3.2.1" for nested sections
 
 
@@ -117,7 +116,7 @@ class DocumentIndex:
     segmentation_strategy: str
     total_segments: int
     total_chars: int
-    segments: List[DocumentSegment]
+    segments: list[DocumentSegment]
     created_at: str
 
 
@@ -165,7 +164,7 @@ class DocumentAnalyzer:
         r"(?i)(troubleshooting|faq|common issues)",
     ]
 
-    def analyze_document_type(self, content: str) -> Tuple[str, float]:
+    def analyze_document_type(self, content: str) -> tuple[str, float]:
         """
         Enhanced document type analysis based on semantic content patterns
 
@@ -212,7 +211,7 @@ class DocumentAnalyzer:
             return "general_document", 0.5
 
     def _calculate_weighted_score(
-        self, content: str, indicators: Dict[str, List[str]]
+        self, content: str, indicators: dict[str, list[str]]
     ) -> float:
         """Calculate weighted semantic indicator scores"""
         score = 0.0
@@ -225,7 +224,7 @@ class DocumentAnalyzer:
                     )  # Consider term frequency
         return score
 
-    def _detect_pattern_score(self, content: str, patterns: List[str]) -> float:
+    def _detect_pattern_score(self, content: str, patterns: list[str]) -> float:
         """Detect semantic pattern matching scores"""
         matches = 0
         for pattern in patterns:
@@ -316,7 +315,7 @@ class DocumentSegmenter:
     def __init__(self):
         self.analyzer = DocumentAnalyzer()
 
-    def segment_document(self, content: str, strategy: str) -> List[DocumentSegment]:
+    def segment_document(self, content: str, strategy: str) -> list[DocumentSegment]:
         """
         Perform intelligent segmentation using the specified strategy
         """
@@ -334,7 +333,7 @@ class DocumentSegmenter:
             # Compatibility with legacy strategies
             return self._segment_by_enhanced_semantic_chunks(content)
 
-    def _segment_by_headers(self, content: str) -> List[DocumentSegment]:
+    def _segment_by_headers(self, content: str) -> list[DocumentSegment]:
         """Segment document based on markdown headers"""
         segments = []
         lines = content.split("\n")
@@ -406,7 +405,7 @@ class DocumentSegmenter:
 
     def _segment_preserve_algorithm_integrity(
         self, content: str
-    ) -> List[DocumentSegment]:
+    ) -> list[DocumentSegment]:
         """Smart segmentation strategy that preserves algorithm integrity"""
         segments = []
 
@@ -440,7 +439,7 @@ class DocumentSegmenter:
 
     def _segment_research_paper_semantically(
         self, content: str
-    ) -> List[DocumentSegment]:
+    ) -> list[DocumentSegment]:
         """Semantic segmentation specifically for research papers"""
         segments = []
 
@@ -465,7 +464,7 @@ class DocumentSegmenter:
 
     def _segment_concept_implementation_hybrid(
         self, content: str
-    ) -> List[DocumentSegment]:
+    ) -> list[DocumentSegment]:
         """Intelligent segmentation combining concepts and implementation"""
         segments = []
 
@@ -490,7 +489,7 @@ class DocumentSegmenter:
 
     def _segment_by_enhanced_semantic_chunks(
         self, content: str
-    ) -> List[DocumentSegment]:
+    ) -> list[DocumentSegment]:
         """Enhanced semantic chunk segmentation"""
         segments = []
 
@@ -530,7 +529,7 @@ class DocumentSegmenter:
 
         return segments
 
-    def _segment_content_aware(self, content: str) -> List[DocumentSegment]:
+    def _segment_content_aware(self, content: str) -> list[DocumentSegment]:
         """Content-aware intelligent segmentation"""
         segments = []
 
@@ -553,7 +552,7 @@ class DocumentSegmenter:
 
         return segments
 
-    def _segment_academic_paper(self, content: str) -> List[DocumentSegment]:
+    def _segment_academic_paper(self, content: str) -> list[DocumentSegment]:
         """Segment academic paper using semantic understanding"""
         # First try header-based segmentation
         headers = re.findall(r"^(#{1,6})\s+(.+)$", content, re.MULTILINE)
@@ -592,7 +591,7 @@ class DocumentSegmenter:
 
         return segments
 
-    def _detect_academic_sections(self, content: str) -> List[Dict]:
+    def _detect_academic_sections(self, content: str) -> list[dict]:
         """Detect academic paper sections even without clear headers"""
         sections = []
 
@@ -651,7 +650,7 @@ class DocumentSegmenter:
 
         return sections
 
-    def _segment_by_semantic_chunks(self, content: str) -> List[DocumentSegment]:
+    def _segment_by_semantic_chunks(self, content: str) -> list[DocumentSegment]:
         """Segment long documents into semantic chunks"""
         # Split into paragraphs first
         paragraphs = [p.strip() for p in content.split("\n\n") if p.strip()]
@@ -721,7 +720,7 @@ class DocumentSegmenter:
 
         return segments
 
-    def _segment_by_paragraphs(self, content: str) -> List[DocumentSegment]:
+    def _segment_by_paragraphs(self, content: str) -> list[DocumentSegment]:
         """Simple paragraph-based segmentation for short documents"""
         paragraphs = [p.strip() for p in content.split("\n\n") if p.strip()]
         segments = []
@@ -750,7 +749,7 @@ class DocumentSegmenter:
 
     # =============== Enhanced intelligent segmentation helper methods ===============
 
-    def _identify_algorithm_blocks(self, content: str) -> List[Dict]:
+    def _identify_algorithm_blocks(self, content: str) -> list[dict]:
         """Identify algorithm blocks and related descriptions"""
         algorithm_blocks = []
 
@@ -790,7 +789,7 @@ class DocumentSegmenter:
 
         return algorithm_blocks
 
-    def _identify_concept_groups(self, content: str) -> List[Dict]:
+    def _identify_concept_groups(self, content: str) -> list[dict]:
         """Identify concept definition groups"""
         concept_groups = []
 
@@ -823,7 +822,7 @@ class DocumentSegmenter:
 
         return concept_groups
 
-    def _identify_formula_chains(self, content: str) -> List[Dict]:
+    def _identify_formula_chains(self, content: str) -> list[dict]:
         """Identify formula derivation chains"""
         formula_chains = []
 
@@ -892,11 +891,11 @@ class DocumentSegmenter:
 
     def _merge_related_content_blocks(
         self,
-        algorithm_blocks: List[Dict],
-        concept_groups: List[Dict],
-        formula_chains: List[Dict],
+        algorithm_blocks: list[dict],
+        concept_groups: list[dict],
+        formula_chains: list[dict],
         content: str,
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """Merge related content blocks to ensure integrity"""
         all_blocks = algorithm_blocks + concept_groups + formula_chains
         all_blocks.sort(key=lambda x: x["start_pos"])
@@ -939,7 +938,7 @@ class DocumentSegmenter:
 
         return merged_blocks
 
-    def _are_blocks_related(self, block1: Dict, block2: Dict) -> bool:
+    def _are_blocks_related(self, block1: dict, block2: dict) -> bool:
         """Determine if two content blocks are related"""
         # Check content type associations
         related_types = [
@@ -1015,7 +1014,7 @@ class DocumentSegmenter:
             section_path=title,
         )
 
-    def _extract_enhanced_keywords(self, content: str, content_type: str) -> List[str]:
+    def _extract_enhanced_keywords(self, content: str, content_type: str) -> list[str]:
         """Extract enhanced keywords based on content type"""
         words = re.findall(r"\b[a-zA-Z]{3,}\b", content.lower())
 
@@ -1051,7 +1050,6 @@ class DocumentSegmenter:
             "one",
             "our",
             "had",
-            "but",
             "have",
             "this",
             "that",
@@ -1072,7 +1070,7 @@ class DocumentSegmenter:
 
     def _calculate_enhanced_relevance_scores(
         self, content: str, content_type: str, importance_score: float
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Calculate enhanced relevance scores"""
         content_lower = content.lower()
 
@@ -1117,24 +1115,24 @@ class DocumentSegmenter:
         return base_scores
 
     # Placeholder methods - can be further implemented later
-    def _identify_research_paper_sections(self, content: str) -> List[Dict]:
+    def _identify_research_paper_sections(self, content: str) -> list[dict]:
         """Identify research paper sections - simplified implementation"""
         # Temporarily use improved semantic detection
         return self._detect_academic_sections(content)
 
-    def _enhance_section_with_context(self, section: Dict, content: str) -> Dict:
+    def _enhance_section_with_context(self, section: dict, content: str) -> dict:
         """Add context to sections - simplified implementation"""
         return section
 
-    def _identify_concept_implementation_pairs(self, content: str) -> List[Dict]:
+    def _identify_concept_implementation_pairs(self, content: str) -> list[dict]:
         """Identify concept-implementation pairs - simplified implementation"""
         return []
 
-    def _merge_concept_with_implementation(self, pair: Dict, content: str) -> Dict:
+    def _merge_concept_with_implementation(self, pair: dict, content: str) -> dict:
         """Merge concepts with implementation - simplified implementation"""
         return pair
 
-    def _detect_semantic_boundaries(self, content: str) -> List[Dict]:
+    def _detect_semantic_boundaries(self, content: str) -> list[dict]:
         """Detect semantic boundaries - based on paragraphs and logical separators"""
         boundaries = []
 
@@ -1216,7 +1214,7 @@ class DocumentSegmenter:
         else:
             return 2000
 
-    def _create_content_aware_chunks(self, content: str, chunk_size: int) -> List[Dict]:
+    def _create_content_aware_chunks(self, content: str, chunk_size: int) -> list[dict]:
         """Create content-aware chunks - simplified implementation"""
         chunks = []
         paragraphs = [p.strip() for p in content.split("\n\n") if p.strip()]
@@ -1295,7 +1293,7 @@ class DocumentSegmenter:
             section_path=title,  # Simplified for now
         )
 
-    def _extract_keywords(self, content: str) -> List[str]:
+    def _extract_keywords(self, content: str) -> list[str]:
         """Extract relevant keywords from content"""
         # Simple keyword extraction - could be enhanced with NLP
         words = re.findall(r"\b[a-zA-Z]{3,}\b", content.lower())
@@ -1316,7 +1314,6 @@ class DocumentSegmenter:
             "one",
             "our",
             "had",
-            "but",
             "have",
             "this",
             "that",
@@ -1363,7 +1360,7 @@ class DocumentSegmenter:
 
     def _calculate_relevance_scores(
         self, content: str, content_type: str
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Calculate relevance scores for different query types"""
         content_lower = content.lower()
 
@@ -1429,7 +1426,7 @@ class DocumentSegmenter:
 
 
 # Global variables
-DOCUMENT_INDEXES: Dict[str, DocumentIndex] = {}
+DOCUMENT_INDEXES: dict[str, DocumentIndex] = {}
 segmenter = DocumentSegmenter()
 
 
@@ -1592,7 +1589,7 @@ async def analyze_and_segment_document(
     except Exception as e:
         logger.error(f"Error in analyze_and_segment_document: {e}")
         return json.dumps(
-            {"status": "error", "message": f"Failed to analyze document: {str(e)}"},
+            {"status": "error", "message": f"Failed to analyze document: {e!s}"},
             ensure_ascii=False,
             indent=2,
         )
@@ -1602,7 +1599,7 @@ async def analyze_and_segment_document(
 async def read_document_segments(
     paper_dir: str,
     query_type: str,
-    keywords: List[str] = None,
+    keywords: list[str] = None,
     max_segments: int = 3,
     max_total_chars: int = None,
 ) -> str:
@@ -1716,7 +1713,7 @@ async def read_document_segments(
         return json.dumps(
             {
                 "status": "error",
-                "message": f"Failed to read document segments: {str(e)}",
+                "message": f"Failed to read document segments: {e!s}",
             },
             ensure_ascii=False,
             indent=2,
@@ -1775,7 +1772,7 @@ async def get_document_overview(paper_dir: str) -> str:
         return json.dumps(
             {
                 "status": "error",
-                "message": f"Failed to get document overview: {str(e)}",
+                "message": f"Failed to get document overview: {e!s}",
             },
             ensure_ascii=False,
             indent=2,
@@ -1811,7 +1808,7 @@ def _calculate_adaptive_char_limit(
 
 
 def _calculate_enhanced_keyword_score(
-    segment: DocumentSegment, keywords: List[str]
+    segment: DocumentSegment, keywords: list[str]
 ) -> float:
     """Calculate enhanced keyword matching score"""
     score = 0.0
@@ -1865,11 +1862,11 @@ def _calculate_completeness_bonus(
 
 
 def _select_segments_with_integrity(
-    scored_segments: List[Tuple],
+    scored_segments: list[tuple],
     max_segments: int,
     max_total_chars: int,
     query_type: str,
-) -> List[Dict]:
+) -> list[dict]:
     """Intelligently select segments while maintaining content integrity"""
     selected_segments = []
     total_chars = 0

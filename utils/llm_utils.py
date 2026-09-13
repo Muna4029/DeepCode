@@ -6,15 +6,16 @@ and reduce code duplication across the project.
 """
 
 import os
+from typing import Any
+
 import yaml
-from typing import Any, Type, Dict, Tuple
 
 # Import LLM classes
 from mcp_agent.workflows.llm.augmented_llm_anthropic import AnthropicAugmentedLLM
 from mcp_agent.workflows.llm.augmented_llm_openai import OpenAIAugmentedLLM
 
 
-def get_preferred_llm_class(config_path: str = "mcp_agent.secrets.yaml") -> Type[Any]:
+def get_preferred_llm_class(config_path: str = "mcp_agent.secrets.yaml") -> type[Any]:
     """
     Automatically select the LLM class based on API key availability in configuration.
 
@@ -89,7 +90,7 @@ def get_default_models(config_path: str = "mcp_agent.config.yaml"):
 
 def get_document_segmentation_config(
     config_path: str = "mcp_agent.config.yaml",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Get document segmentation configuration from config file.
 
@@ -124,7 +125,7 @@ def get_document_segmentation_config(
 
 def should_use_document_segmentation(
     document_content: str, config_path: str = "mcp_agent.config.yaml"
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """
     Determine whether to use document segmentation based on configuration and document size.
 
@@ -159,7 +160,7 @@ def should_use_document_segmentation(
 
 def get_adaptive_agent_config(
     use_segmentation: bool, search_server_names: list = None
-) -> Dict[str, list]:
+) -> dict[str, list]:
     """
     Get adaptive agent configuration based on whether to use document segmentation.
 
@@ -197,7 +198,7 @@ def get_adaptive_agent_config(
     return config
 
 
-def get_adaptive_prompts(use_segmentation: bool) -> Dict[str, str]:
+def get_adaptive_prompts(use_segmentation: bool) -> dict[str, str]:
     """
     Get appropriate prompt versions based on segmentation usage.
 
@@ -209,12 +210,12 @@ def get_adaptive_prompts(use_segmentation: bool) -> Dict[str, str]:
     """
     # Import here to avoid circular imports
     from prompts.code_prompts import (
-        PAPER_CONCEPT_ANALYSIS_PROMPT,
-        PAPER_ALGORITHM_ANALYSIS_PROMPT,
         CODE_PLANNING_PROMPT,
-        PAPER_CONCEPT_ANALYSIS_PROMPT_TRADITIONAL,
-        PAPER_ALGORITHM_ANALYSIS_PROMPT_TRADITIONAL,
         CODE_PLANNING_PROMPT_TRADITIONAL,
+        PAPER_ALGORITHM_ANALYSIS_PROMPT,
+        PAPER_ALGORITHM_ANALYSIS_PROMPT_TRADITIONAL,
+        PAPER_CONCEPT_ANALYSIS_PROMPT,
+        PAPER_CONCEPT_ANALYSIS_PROMPT_TRADITIONAL,
     )
 
     if use_segmentation:
