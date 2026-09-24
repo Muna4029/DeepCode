@@ -109,10 +109,10 @@ async def perform_document_conversion(
         try:
             with open(file_path, "rb") as f:
                 header = f.read(8)
-                is_pdf_file = header.startswith(b'%PDF')
+                is_pdf_file = header.startswith(b"%PDF")
         except Exception:
             is_pdf_file = file_path.lower().endswith(".pdf")
-    
+
     if is_pdf_file and PYPDF2_AVAILABLE:
         try:
             simple_converter = SimplePdfConverter()
@@ -585,7 +585,7 @@ class DoclingConverter:
                         ext = "png"
 
                     # 生成文件名
-                    filename = f"image_{idx+1}.{ext}"
+                    filename = f"image_{idx + 1}.{ext}"
                     filepath = os.path.join(images_dir, filename)
 
                     # 保存图片数据
@@ -600,7 +600,7 @@ class DoclingConverter:
                         image_map[img_id] = rel_path
 
                 except Exception as img_error:
-                    print(f"Warning: Failed to extract image {idx+1}: {img_error}")
+                    print(f"Warning: Failed to extract image {idx + 1}: {img_error}")
                     continue
 
         except Exception as e:
