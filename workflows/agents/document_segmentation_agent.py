@@ -5,7 +5,6 @@ A lightweight agent that coordinates with the document segmentation MCP server
 to analyze document structure and prepare segments for other agents.
 """
 
-import asyncio
 import os
 import logging
 from typing import Dict, Any, Optional

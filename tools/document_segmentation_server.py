@@ -63,8 +63,7 @@ import re
 import json
 import sys
 import io
-from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, List, Tuple
 import hashlib
 import logging
 from datetime import datetime
