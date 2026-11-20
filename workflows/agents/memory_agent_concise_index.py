@@ -64,6 +64,7 @@ class ConciseMemoryAgent:
             "anthropic": "claude-sonnet-4-20250514",
             "openai": "gpt-4o",
         }
+        self.logger.info(f"Using models - Anthropic: {self.default_models['anthropic']}, OpenAI: {self.default_models['openai']}")
 
         # Memory state tracking - new logic: trigger after each write_file
         self.last_write_file_detected = (
@@ -282,6 +283,8 @@ class ConciseMemoryAgent:
 
                 # Remove quotes if present
                 if filename.startswith('"') and filename.endswith('"'):
+                    filename = filename[1:-1]
+                files.append(filename)  # Append the filename to the list
                     filename = filename[1:-1]
 
                 # Check if it looks like a file (has extension)
@@ -648,6 +651,7 @@ class ConciseMemoryAgent:
             if self.implemented_files
             else "- None yet"
         )
+        self.logger.info(f"Implemented files: {implemented_files_list}")
 
         formatted_summary = f"""# Code Implementation Summary
 **Generated**: {timestamp}
@@ -758,6 +762,7 @@ class ConciseMemoryAgent:
                 if block.type == "text":
                     content += block.text
 
+            self.logger.info(f"Response content: {content}")
             return {"content": content}
 
         elif client_type == "openai":
@@ -1006,6 +1011,7 @@ class ConciseMemoryAgent:
             if os.path.exists(self.code_summary_path):
                 with open(self.code_summary_path, "r", encoding="utf-8") as f:
                     content = f.read().strip()
+                    self.logger.info(f"Read content from knowledge base: {content}")
 
                 if content:
                     # Extract only the final/latest implementation entry
@@ -1245,6 +1251,7 @@ class ConciseMemoryAgent:
         )
 
         unimplemented_files = self.get_unimplemented_files()
+        self.logger.info(f"Unimplemented files: {unimplemented_files}")
         unimplemented_list = (
             "\n".join([f"- {file}" for file in unimplemented_files])
             if unimplemented_files

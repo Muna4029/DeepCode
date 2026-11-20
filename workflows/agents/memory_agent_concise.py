@@ -21,7 +21,7 @@ import logging
 import os
 import time
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 
 class ConciseMemoryAgent:
@@ -274,7 +274,7 @@ class ConciseMemoryAgent:
         """Extract files from simple list format (- filename)"""
         files = []
 
-        for line in lines:
+        for _ in lines:
             line = line.strip()
             if line.startswith("- ") and not line.startswith('- "'):
                 # Remove leading "- " and clean up
