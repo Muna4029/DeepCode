@@ -695,7 +695,7 @@ class ConciseMemoryAgent:
         summary = f"""# Code Implementation Summary
 **All Previously Implemented Files:**
 {implemented_files_list}
-**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+**Generated**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 **File Implemented**: {file_path}
 **Total Files Implemented**: {files_implemented}
 **Summary failed to generate.**
